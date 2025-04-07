@@ -1,4 +1,3 @@
-import time
 from selenium.webdriver.common.by import By
 from base.base import BaseClass
 
@@ -26,4 +25,3 @@ class ContactPage(BaseClass):
         if submit:
             submit_element = self.wait_till_clickable(By.LINK_TEXT, "Submit")
             submit_element.click()
-        time.sleep(2)

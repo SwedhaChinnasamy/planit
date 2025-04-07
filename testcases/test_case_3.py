@@ -27,9 +27,7 @@ class Test_Case3(softest.TestCase):
         actual_price_list = cart.find_price(shopping_list)
 
         # Step 4: Verify the subtotal for each product is correct
-        subtotal = cart.find_subtotal()
-        for item, details in subtotal.items():
-            self.ut.validate_subtotal(item, details)
+        self.ut.validate_subtotal()
 
         # Step 5: Verify the price for each product
         self.ut.validate_price(shopping_list, expected_price_list, actual_price_list)

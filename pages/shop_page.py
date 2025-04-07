@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-
 from base.base import BaseClass
 
 class ShopPage(BaseClass):
