@@ -1,3 +1,5 @@
+import inspect
+import logging
 import re
 import softest
 from selenium.common import NoSuchElementException
@@ -11,7 +13,7 @@ class Utils(softest.TestCase):
         self.driver = driver
 
     def wait_until_element_present(self, type, locator):
-        wait = WebDriverWait(self.driver, 30)
+        wait = WebDriverWait(self.driver, 60)
         return wait.until(EC.presence_of_element_located((type, locator)))
 
     def strip_and_convert_to_float(self, str):
@@ -39,11 +41,14 @@ class Utils(softest.TestCase):
         self.soft_assert(self.assertTrue, found, msg=f"Feedback was not submitted")
 
     def validate_price(self, shopping_list, expected_price_list, actual_price_list):
+        log = Utils.custom_logger()
         for i in range(0, len(actual_price_list)):
+            log.debug(f"Verifying price of {shopping_list[i]}")
             self.soft_assert(self.assertEqual, expected_price_list[i], actual_price_list[i],
                              msg=f"The price for {shopping_list[i]} does not match the actual price.")
 
     def validate_subtotal(self):
+        log = Utils.custom_logger()
         cart_items = self.driver.find_elements(By.XPATH, "//tbody//tr")
         for i in range(1, len(cart_items)+1):
             item = self.driver.find_element(By.XPATH, "//tbody//tr["+str(i)+"]//td[1]").text
@@ -51,18 +56,44 @@ class Utils(softest.TestCase):
             quantity = int(self.driver.find_element(By.XPATH, "//tr["+str(i)+"]//td[3]//input").get_attribute("value"))
             subtotal = self.find_strip_convert_to_float(By.XPATH, "//tbody//tr["+str(i)+"]//td[4]")
             expected_subtotal = price * quantity
-            print(f"Item: {item}, Price: {price}, Quantity: {quantity}, Expected Subtotal: {expected_subtotal}, Actual Subtotal: {subtotal}")
+            log.debug(f"Verifying subtotal of {item}")
             self.soft_assert(self.assertEqual, expected_subtotal, subtotal,
                              msg=f"The subtotal for {item} is not correct.")
 
     def validate_total(self):
+        log = Utils.custom_logger()
         actual_total = self.find_strip_convert_to_float(By.XPATH, "//strong[@class='total ng-binding']")
         subtotal_elems = self.driver.find_elements(By.XPATH, "//td[4]")
         expected_total = 0
         for elem in subtotal_elems:
             expected_total += self.strip_and_convert_to_float(elem.text)
 
-        print(f"Expected Total: {expected_total}, Actual Total: {actual_total}")
+        log.debug("Verifying the total cost of the cart")
         self.soft_assert(self.assertEqual, expected_total, actual_total,
                          msg=f"The total does not match the sum of subtotal of all the items.")
         self.assert_all()
+
+    @staticmethod
+    def custom_logger(log_level=logging.DEBUG):
+        #set logger name
+        logger_name = inspect.stack()[1][3]
+
+        #create logger and set log level
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(log_level)
+
+        #create stream handler and file handler
+        ch = logging.StreamHandler()
+        fh = logging.FileHandler("logfile.log")
+
+        #create formatter
+        #formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+        formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+        ch.setFormatter(formatter)
+        fh.setFormatter(formatter)
+
+        #add formatter to stream and file handler
+        logger.addHandler(ch)
+        logger.addHandler(fh)
+
+        return logger

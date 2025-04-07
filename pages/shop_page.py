@@ -1,7 +1,9 @@
 from selenium.webdriver.common.by import By
 from base.base import BaseClass
+from utilities.utils import Utils
 
 class ShopPage(BaseClass):
+    log = Utils.custom_logger()
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
@@ -13,6 +15,7 @@ class ShopPage(BaseClass):
             i = quantityList[shoppingList.index(item)]
 
             while i > 0:
+                self.log.info(f"Adding {item} to cart")
                 item_elem.click()
                 i -= 1
 
