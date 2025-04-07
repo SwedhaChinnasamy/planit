@@ -1,6 +1,5 @@
 import pytest
 from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
 
 @pytest.fixture(scope="class")
 def setup(request, browser):
@@ -9,13 +8,13 @@ def setup(request, browser):
         driver = webdriver.Chrome()
     elif browser == "firefox":
         driver = webdriver.Firefox()
-    elif browser =="edge":
-        driver = webdriver.Ie()
     else:
+        #default is set to Chrome
         driver = webdriver.Chrome()
-        #print("Please provide valid browser. Supported browser values are 'chrome', 'firefox' or 'edge")
+
     driver.maximize_window()
     driver.get("http://jupiter.cloud.planittesting.com")
+    driver.implicitly_wait(5)
     request.cls.driver = driver
     yield
     driver.close()

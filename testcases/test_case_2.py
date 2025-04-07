@@ -22,13 +22,13 @@ class TestCase2(softest.TestCase):
         cp = self.hp.go_to_contact_page()
 
         #Step 2 & 3: Populate mandatory fields and click submit
-        #cp.submit_message(forename="John", email="John@example.com", message="This is a test", submit=True)
         self.log.info("Step 2: Fill the mandatory fields and submit the feedback")
         cp.submit_message(name, email, msg, True)
 
         #Step 4:Validate successful submission message
         self.log.info("Step 3: Verify successful feedback message")
         self.ut.validate_success()
+        cp.go_back_to_contact()
 
         self.log.info("Test Case 2: Complete\n")
 

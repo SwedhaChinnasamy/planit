@@ -16,6 +16,10 @@ class Utils(softest.TestCase):
         wait = WebDriverWait(self.driver, 60)
         return wait.until(EC.presence_of_element_located((type, locator)))
 
+    def wait_till_clickable(self, type, locator):
+        wait = WebDriverWait(self.driver, 60)
+        return wait.until(EC.element_to_be_clickable((type, locator)))
+
     def strip_and_convert_to_float(self, str):
         return float(re.sub("[^0-9.]", "", str))
 
@@ -35,7 +39,6 @@ class Utils(softest.TestCase):
         found = True
         try:
             self.wait_until_element_present(By.XPATH, "//div[@class='alert alert-success']")
-            self.driver.find_element(By.XPATH, "//a[normalize-space()='« Back']").click()
         except NoSuchElementException:
             found = False
         self.soft_assert(self.assertTrue, found, msg=f"Feedback was not submitted")

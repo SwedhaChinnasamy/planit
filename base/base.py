@@ -7,7 +7,7 @@ class BaseClass():
         self.driver = driver
 
     def wait_till_clickable(self, type, locator):
-        wait = WebDriverWait(self.driver, 10)
+        wait = WebDriverWait(self.driver, 60)
         return wait.until(EC.element_to_be_clickable((type, locator)))
 
     def wait_until_element_present(self, type, locator):

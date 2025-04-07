@@ -1,3 +1,5 @@
+from selenium.common import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from base.base import BaseClass
 from utilities.utils import Utils
@@ -34,3 +36,12 @@ class ContactPage(BaseClass):
             submit_element = self.wait_till_clickable(By.LINK_TEXT, "Submit")
             self.log.info("Submitting the feedback")
             submit_element.click()
+
+    def go_back_to_contact(self):
+        self.wait_till_clickable(By.LINK_TEXT, "« Back").send_keys(Keys.ENTER)
+        for i in range(5):
+            try:
+                self.driver.find_element(By.LINK_TEXT, "« Back").send_keys(Keys.ENTER)
+            except NoSuchElementException:
+                break
+
